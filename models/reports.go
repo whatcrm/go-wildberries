@@ -147,13 +147,75 @@ type DeductionsQuery struct {
 
 type MeasurementPenaltiesResponse struct {
 	Data struct {
-		Reports []map[string]interface{} `json:"reports"`
+		Reports []MeasurementPenaltyItem `json:"reports"`
 		Total   int                      `json:"total"`
 	} `json:"data"`
 }
 
-type WarehouseMeasurementsResponse = MeasurementPenaltiesResponse
-type DeductionsResponse = MeasurementPenaltiesResponse
+type MeasurementPenaltyItem struct {
+	NmID           int64    `json:"nmId"`
+	SubjectName    string   `json:"subjectName"`
+	DimID          int64    `json:"dimId"`
+	PrcOver        float64  `json:"prcOver"`
+	Volume         float64  `json:"volume"`
+	Width          int      `json:"width"`
+	Length         int      `json:"length"`
+	Height         int      `json:"height"`
+	VolumeSup      float64  `json:"volumeSup"`
+	WidthSup       int      `json:"widthSup"`
+	LengthSup      int      `json:"lengthSup"`
+	HeightSup      int      `json:"heightSup"`
+	PhotoURLs      []string `json:"photoUrls"`
+	DTBonus        string   `json:"dtBonus"`
+	IsValid        bool     `json:"isValid"`
+	IsValidDT      string   `json:"isValidDt"`
+	ReversalAmount float64  `json:"reversalAmount"`
+	PenaltyAmount  float64  `json:"penaltyAmount"`
+}
+
+type WarehouseMeasurementsResponse struct {
+	Data struct {
+		Reports []WarehouseMeasurementItem `json:"reports"`
+		Total   int                        `json:"total"`
+	} `json:"data"`
+}
+
+type WarehouseMeasurementItem struct {
+	NmID        int64    `json:"nmId"`
+	SubjectName string   `json:"subjectName"`
+	DimID       int64    `json:"dimId"`
+	Volume      float64  `json:"volume"`
+	Width       int      `json:"width"`
+	Length      int      `json:"length"`
+	Height      int      `json:"height"`
+	PhotoURLs   []string `json:"photoUrls"`
+	DT          string   `json:"dt"`
+}
+
+type DeductionsResponse struct {
+	Data struct {
+		Reports []DeductionItem `json:"reports"`
+		Total   int             `json:"total"`
+	} `json:"data"`
+}
+
+type DeductionItem struct {
+	DTBonus       string   `json:"dtBonus"`
+	NmID          int64    `json:"nmId"`
+	OldShkID      int64    `json:"oldShkId"`
+	OldColor      string   `json:"oldColor"`
+	OldSize       string   `json:"oldSize"`
+	OldSKU        string   `json:"oldSku"`
+	OldVendorCode string   `json:"oldVendorCode"`
+	NewShkID      int64    `json:"newShkId"`
+	NewColor      string   `json:"newColor"`
+	NewSize       string   `json:"newSize"`
+	NewSKU        string   `json:"newSku"`
+	NewVendorCode string   `json:"newVendorCode"`
+	BonusSumm     float64  `json:"bonusSumm"`
+	BonusType     string   `json:"bonusType"`
+	PhotoURLs     []string `json:"photoUrls"`
+}
 
 type AntifraudDetailsResponse struct {
 	Details []struct {
@@ -166,7 +228,17 @@ type AntifraudDetailsResponse struct {
 }
 
 type GoodsLabelingResponse struct {
-	Report []map[string]interface{} `json:"report"`
+	Report []GoodsLabelingItem `json:"report"`
+}
+
+type GoodsLabelingItem struct {
+	Amount    float64  `json:"amount"`
+	Date      string   `json:"date"`
+	IncomeID  int64    `json:"incomeId"`
+	NmID      int64    `json:"nmID"`
+	PhotoURLs []string `json:"photoUrls"`
+	ShkID     int64    `json:"shkID"`
+	SKU       string   `json:"sku"`
 }
 
 type AcceptanceReportItem struct {
@@ -240,9 +312,244 @@ type BrandShareResponse struct {
 }
 
 type BannedProductsResponse struct {
-	Report []map[string]interface{} `json:"report"`
+	Report []BannedProductItem `json:"report"`
+}
+
+type BannedProductItem struct {
+	Brand      string   `json:"brand"`
+	NmID       int64    `json:"nmId"`
+	Title      string   `json:"title"`
+	VendorCode string   `json:"vendorCode"`
+	Reason     string   `json:"reason,omitempty"`
+	NmRating   *float64 `json:"nmRating,omitempty"`
 }
 
 type GoodsReturnResponse struct {
-	Report []map[string]interface{} `json:"report"`
+	Report []GoodsReturnItem `json:"report"`
+}
+
+type GoodsReturnItem struct {
+	Barcode          string  `json:"barcode"`
+	Brand            string  `json:"brand"`
+	CompletedDT      *string `json:"completedDt"`
+	DstOfficeAddress string  `json:"dstOfficeAddress"`
+	DstOfficeID      int64   `json:"dstOfficeId"`
+	ExpiredDT        *string `json:"expiredDt"`
+	IsStatusActive   int     `json:"isStatusActive"`
+	NmID             int64   `json:"nmId"`
+	OrderDT          string  `json:"orderDt"`
+	OrderID          int64   `json:"orderId"`
+	ReadyToReturnDT  *string `json:"readyToReturnDt"`
+	Reason           string  `json:"reason"`
+	ReturnType       string  `json:"returnType"`
+	ShkID            int64   `json:"shkId"`
+	SRID             string  `json:"srid"`
+	Status           string  `json:"status"`
+	StickerID        string  `json:"stickerId"`
+	SubjectName      string  `json:"subjectName"`
+	TechSize         string  `json:"techSize"`
+}
+
+type DateRange struct {
+	Start string `json:"start"`
+	End   string `json:"end"`
+}
+
+type TableOrderBy struct {
+	Field string `json:"field"`
+	Mode  string `json:"mode"`
+}
+
+type InventoryRequest struct {
+	NmIDs   []int64 `json:"nmIds,omitempty"`
+	ChrtIDs []int64 `json:"chrtIds,omitempty"`
+	Limit   *int    `json:"limit,omitempty"`
+	Offset  *int    `json:"offset,omitempty"`
+}
+
+type InventoryWbResponseEnvelope struct {
+	Data InventoryWbResponse `json:"data"`
+}
+
+type InventoryWbResponse struct {
+	Items []InventoryWbItem `json:"items"`
+}
+
+type InventoryWbItem struct {
+	NmID            int64  `json:"nmId"`
+	ChrtID          int64  `json:"chrtId"`
+	WarehouseID     int64  `json:"warehouseId"`
+	WarehouseName   string `json:"warehouseName"`
+	RegionName      string `json:"regionName"`
+	Quantity        uint64 `json:"quantity"`
+	InWayToClient   uint64 `json:"inWayToClient"`
+	InWayFromClient uint64 `json:"inWayFromClient"`
+}
+
+type CommonReportFilters struct {
+	NmIDs               []int64      `json:"nmIDs,omitempty"`
+	SubjectIDs          []int32      `json:"subjectIDs,omitempty"`
+	BrandNames          []string     `json:"brandNames,omitempty"`
+	TagIDs              []int64      `json:"tagIDs,omitempty"`
+	CurrentPeriod       DateRange    `json:"currentPeriod"`
+	StockType           string       `json:"stockType"`
+	SkipDeletedNm       bool         `json:"skipDeletedNm"`
+	AvailabilityFilters []string     `json:"availabilityFilters,omitempty"`
+	OrderBy             TableOrderBy `json:"orderBy"`
+}
+
+type TableGroupRequestSt struct {
+	CommonReportFilters
+	Limit  *int `json:"limit,omitempty"`
+	Offset int  `json:"offset"`
+}
+
+type TableGroupResponseEnvelope struct {
+	Data TableGroupResponseSt `json:"data"`
+}
+
+type TableGroupResponseSt struct {
+	Groups   []TableGroupItemSt `json:"groups"`
+	Currency string             `json:"currency"`
+}
+
+type TableGroupItemSt struct {
+	SubjectID   int64                `json:"subjectID"`
+	SubjectName string               `json:"subjectName"`
+	BrandName   string               `json:"brandName"`
+	TagID       int64                `json:"tagID"`
+	TagName     string               `json:"tagName"`
+	Metrics     TableCommonMetrics   `json:"metrics"`
+	Items       []TableProductItemSt `json:"items"`
+}
+
+type TableCommonMetrics struct {
+	OrdersCount      uint64  `json:"ordersCount"`
+	OrdersSum        uint64  `json:"ordersSum"`
+	AvgOrders        float64 `json:"avgOrders"`
+	BuyoutCount      uint64  `json:"buyoutCount"`
+	BuyoutSum        uint64  `json:"buyoutSum"`
+	BuyoutPercent    uint32  `json:"buyoutPercent"`
+	StockCount       uint64  `json:"stockCount"`
+	StockSum         uint64  `json:"stockSum"`
+	ToClientCount    uint64  `json:"toClientCount"`
+	FromClientCount  uint64  `json:"fromClientCount"`
+	LostOrdersCount  float64 `json:"lostOrdersCount"`
+	LostOrdersSum    float64 `json:"lostOrdersSum"`
+	LostBuyoutsCount float64 `json:"lostBuyoutsCount"`
+	LostBuyoutsSum   float64 `json:"lostBuyoutsSum"`
+}
+
+type TableProductItemSt struct {
+	NmID        int64            `json:"nmID"`
+	IsDeleted   bool             `json:"isDeleted"`
+	SubjectName string           `json:"subjectName"`
+	Name        string           `json:"name"`
+	VendorCode  string           `json:"vendorCode"`
+	BrandName   string           `json:"brandName"`
+	MainPhoto   string           `json:"mainPhoto"`
+	HasSizes    bool             `json:"hasSizes"`
+	Metrics     ProductMetricsSt `json:"metrics"`
+}
+
+type ProductMetricsSt struct {
+	TableCommonMetrics
+	CurrentPrice struct {
+		MinPrice uint64 `json:"minPrice"`
+		MaxPrice uint64 `json:"maxPrice"`
+	} `json:"currentPrice"`
+	Availability string `json:"availability"`
+}
+
+type TableProductRequest struct {
+	NmIDs               []int64      `json:"nmIDs,omitempty"`
+	SubjectID           *int32       `json:"subjectID,omitempty"`
+	BrandName           string       `json:"brandName,omitempty"`
+	TagID               *int64       `json:"tagID,omitempty"`
+	CurrentPeriod       DateRange    `json:"currentPeriod"`
+	StockType           string       `json:"stockType"`
+	SkipDeletedNm       bool         `json:"skipDeletedNm"`
+	OrderBy             TableOrderBy `json:"orderBy"`
+	AvailabilityFilters []string     `json:"availabilityFilters,omitempty"`
+	Limit               *int         `json:"limit,omitempty"`
+	Offset              int          `json:"offset"`
+}
+
+type TableProductResponseEnvelope struct {
+	Data TableProductResponse `json:"data"`
+}
+
+type TableProductResponse struct {
+	Items    []TableProductItemSt `json:"items"`
+	Currency string               `json:"currency"`
+}
+
+type TableSizeRequest struct {
+	NmID          int64        `json:"nmID"`
+	CurrentPeriod DateRange    `json:"currentPeriod"`
+	StockType     string       `json:"stockType"`
+	OrderBy       TableOrderBy `json:"orderBy"`
+	IncludeOffice bool         `json:"includeOffice"`
+}
+
+type TableSizeResponseEnvelope struct {
+	Data TableSizeResponse `json:"data"`
+}
+
+type TableSizeResponse struct {
+	Offices  []TableOfficeItem `json:"offices"`
+	Sizes    []TableSizeItem   `json:"sizes"`
+	Currency string            `json:"currency"`
+}
+
+type TableSizeItem struct {
+	Name    string            `json:"name"`
+	ChrtID  int64             `json:"chrtID"`
+	Offices []TableOfficeItem `json:"offices"`
+	Metrics ProductMetricsSt  `json:"metrics"`
+}
+
+type TableOfficeItem struct {
+	RegionName string             `json:"regionName"`
+	OfficeID   int64              `json:"officeID"`
+	OfficeName string             `json:"officeName"`
+	Metrics    TableCommonMetrics `json:"metrics"`
+}
+
+type TableShippingOfficeRequest struct {
+	NmIDs         []int64   `json:"nmIDs,omitempty"`
+	SubjectIDs    []int32   `json:"subjectIDs,omitempty"`
+	BrandNames    []string  `json:"brandNames,omitempty"`
+	TagIDs        []int64   `json:"tagIDs,omitempty"`
+	CurrentPeriod DateRange `json:"currentPeriod"`
+	StockType     string    `json:"stockType"`
+	SkipDeletedNm bool      `json:"skipDeletedNm"`
+}
+
+type TableShippingOfficeResponseEnvelope struct {
+	Data TableShippingOfficeResponse `json:"data"`
+}
+
+type TableShippingOfficeResponse struct {
+	Regions  []TableShippingOfficeItem `json:"regions"`
+	Currency string                    `json:"currency"`
+}
+
+type TableShippingOfficeItem struct {
+	RegionName string                     `json:"regionName"`
+	Metrics    TableShippingOfficeMetrics `json:"metrics"`
+	Offices    []TableShippingOffice      `json:"offices"`
+}
+
+type TableShippingOffice struct {
+	OfficeID   int64                      `json:"officeID"`
+	OfficeName string                     `json:"officeName"`
+	Metrics    TableShippingOfficeMetrics `json:"metrics"`
+}
+
+type TableShippingOfficeMetrics struct {
+	StockCount      uint64 `json:"stockCount"`
+	StockSum        uint64 `json:"stockSum"`
+	ToClientCount   uint64 `json:"toClientCount"`
+	FromClientCount uint64 `json:"fromClientCount"`
 }

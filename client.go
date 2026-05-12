@@ -14,8 +14,10 @@ const (
 	DefaultCommonBaseURL          = "https://common-api.wildberries.ru"
 	DefaultContentBaseURL         = "https://content-api.wildberries.ru"
 	DefaultFeedbacksBaseURL       = "https://feedbacks-api.wildberries.ru"
+	DefaultBuyerChatBaseURL       = "https://buyer-chat-api.wildberries.ru"
 	DefaultDiscountsBaseURL       = "https://discounts-prices-api.wildberries.ru"
 	DefaultMarketplaceBaseURL     = "https://marketplace-api.wildberries.ru"
+	DefaultReturnsBaseURL         = "https://returns-api.wildberries.ru"
 	DefaultSuppliesBaseURL        = "https://supplies-api.wildberries.ru"
 	DefaultFinanceBaseURL         = "https://finance-api.wildberries.ru"
 	DefaultStatisticsBaseURL      = "https://statistics-api.wildberries.ru"
@@ -32,8 +34,10 @@ type Client struct {
 	CommonBaseURL          string
 	ContentBaseURL         string
 	FeedbacksBaseURL       string
+	BuyerChatBaseURL       string
 	DiscountsBaseURL       string
 	MarketplaceBaseURL     string
+	ReturnsBaseURL         string
 	SuppliesBaseURL        string
 	FinanceBaseURL         string
 	StatisticsBaseURL      string
@@ -55,8 +59,10 @@ func NewClient(token string) (*Client, error) {
 		CommonBaseURL:          DefaultCommonBaseURL,
 		ContentBaseURL:         DefaultContentBaseURL,
 		FeedbacksBaseURL:       DefaultFeedbacksBaseURL,
+		BuyerChatBaseURL:       DefaultBuyerChatBaseURL,
 		DiscountsBaseURL:       DefaultDiscountsBaseURL,
 		MarketplaceBaseURL:     DefaultMarketplaceBaseURL,
+		ReturnsBaseURL:         DefaultReturnsBaseURL,
 		SuppliesBaseURL:        DefaultSuppliesBaseURL,
 		FinanceBaseURL:         DefaultFinanceBaseURL,
 		StatisticsBaseURL:      DefaultStatisticsBaseURL,

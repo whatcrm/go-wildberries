@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -168,11 +169,55 @@ func (c *Client) DownloadWarehouseRemainsReport(ctx context.Context, taskID stri
 }
 
 func (c *Client) GetMeasurementPenalties(ctx context.Context, query models.RetentionsQuery) (*models.MeasurementPenaltiesResponse, error) {
-	return c.getRetentions(ctx, reports.MeasurementPenaltiesEndpoint, query)
+	reqURL, err := url.Parse(c.SellerAnalyticsBaseURL + reports.MeasurementPenaltiesEndpoint)
+	if err != nil {
+		return nil, err
+	}
+	q := reqURL.Query()
+	if query.DateFrom != "" {
+		q.Set("dateFrom", query.DateFrom)
+	}
+	q.Set("dateTo", query.DateTo)
+	q.Set("limit", strconv.Itoa(query.Limit))
+	if query.Offset > 0 {
+		q.Set("offset", strconv.Itoa(query.Offset))
+	}
+	reqURL.RawQuery = q.Encode()
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	var out models.MeasurementPenaltiesResponse
+	if err = c.Send(req, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
 }
 
 func (c *Client) GetWarehouseMeasurements(ctx context.Context, query models.RetentionsQuery) (*models.WarehouseMeasurementsResponse, error) {
-	return c.getRetentions(ctx, reports.WarehouseMeasurementsEndpoint, query)
+	reqURL, err := url.Parse(c.SellerAnalyticsBaseURL + reports.WarehouseMeasurementsEndpoint)
+	if err != nil {
+		return nil, err
+	}
+	q := reqURL.Query()
+	if query.DateFrom != "" {
+		q.Set("dateFrom", query.DateFrom)
+	}
+	q.Set("dateTo", query.DateTo)
+	q.Set("limit", strconv.Itoa(query.Limit))
+	if query.Offset > 0 {
+		q.Set("offset", strconv.Itoa(query.Offset))
+	}
+	reqURL.RawQuery = q.Encode()
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	var out models.WarehouseMeasurementsResponse
+	if err = c.Send(req, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
 }
 
 func (c *Client) GetDeductions(ctx context.Context, query models.DeductionsQuery) (*models.DeductionsResponse, error) {
@@ -394,6 +439,155 @@ func (c *Client) GetGoodsReturn(ctx context.Context, dateFrom, dateTo string) (*
 	return &out, nil
 }
 
+func (c *Client) GetStocksReportWBWarehouses(ctx context.Context, request models.InventoryRequest) (*models.InventoryWbResponseEnvelope, error) {
+	var out models.InventoryWbResponseEnvelope
+	if err := c.postSellerAnalyticsReport(ctx, reports.StocksReportWBWarehousesEndpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) GetStocksReportGroups(ctx context.Context, request models.TableGroupRequestSt) (*models.TableGroupResponseEnvelope, error) {
+	var out models.TableGroupResponseEnvelope
+	if err := c.postSellerAnalyticsReport(ctx, reports.StocksReportGroupsEndpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) GetStocksReportProducts(ctx context.Context, request models.TableProductRequest) (*models.TableProductResponseEnvelope, error) {
+	var out models.TableProductResponseEnvelope
+	if err := c.postSellerAnalyticsReport(ctx, reports.StocksReportProductsEndpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) GetStocksReportSizes(ctx context.Context, request models.TableSizeRequest) (*models.TableSizeResponseEnvelope, error) {
+	var out models.TableSizeResponseEnvelope
+	if err := c.postSellerAnalyticsReport(ctx, reports.StocksReportSizesEndpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) GetStocksReportOffices(ctx context.Context, request models.TableShippingOfficeRequest) (*models.TableShippingOfficeResponseEnvelope, error) {
+	var out models.TableShippingOfficeResponseEnvelope
+	if err := c.postSellerAnalyticsReport(ctx, reports.StocksReportOfficesEndpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) GetSalesFunnelProducts(ctx context.Context, request models.ProductsRequest) (*models.ProductsResponseEnvelope, error) {
+	var out models.ProductsResponseEnvelope
+	if err := c.postSellerAnalyticsReport(ctx, reports.SalesFunnelProductsV3Endpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) GetSalesFunnelProductsHistory(ctx context.Context, request models.ProductHistoryRequest) (models.ProductHistoryResponse, error) {
+	var out models.ProductHistoryResponse
+	if err := c.postSellerAnalyticsReport(ctx, reports.SalesFunnelProductsHistoryEndpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *Client) GetSalesFunnelGroupedHistory(ctx context.Context, request models.GroupedHistoryRequest) (*models.GroupedHistoryResponseEnvelope, error) {
+	var out models.GroupedHistoryResponseEnvelope
+	if err := c.postSellerAnalyticsReport(ctx, reports.SalesFunnelGroupedHistoryEndpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) CreateNmReportDownload(ctx context.Context, request models.SalesFunnelCSVRequest) (*models.NmReportCreateReportResponse, error) {
+	var out models.NmReportCreateReportResponse
+	if err := c.postSellerAnalyticsReport(ctx, reports.NmReportDownloadsEndpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) GetNmReportDownloads(ctx context.Context, downloadIDs []string) (*models.NmReportGetReportsResponse, error) {
+	reqURL, err := url.Parse(c.SellerAnalyticsBaseURL + reports.NmReportDownloadsEndpoint)
+	if err != nil {
+		return nil, err
+	}
+	q := reqURL.Query()
+	for _, id := range downloadIDs {
+		q.Add("filter[downloadIds]", id)
+	}
+	reqURL.RawQuery = q.Encode()
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	var out models.NmReportGetReportsResponse
+	if err = c.Send(req, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) RetryNmReportDownload(ctx context.Context, request models.NmReportRetryReportRequest) (*models.NmReportRetryReportResponse, error) {
+	var out models.NmReportRetryReportResponse
+	if err := c.postSellerAnalyticsReport(ctx, reports.NmReportDownloadsRetryEndpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) DownloadNmReportFile(ctx context.Context, downloadID string, out io.Writer) error {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.SellerAnalyticsBaseURL+fmt.Sprintf(reports.NmReportDownloadFileEndpoint, downloadID), nil)
+	if err != nil {
+		return err
+	}
+	return c.Send(req, out)
+}
+
+func (c *Client) GetSearchReportMain(ctx context.Context, request models.MainRequest) (*models.MainResponseEnvelope, error) {
+	var out models.MainResponseEnvelope
+	if err := c.postSellerAnalyticsReport(ctx, reports.SearchReportMainEndpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) GetSearchReportTableGroups(ctx context.Context, request models.TableGroupRequest) (*models.TableGroupResponseEnvelopeV2, error) {
+	var out models.TableGroupResponseEnvelopeV2
+	if err := c.postSellerAnalyticsReport(ctx, reports.SearchReportTableGroupsEndpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) GetSearchReportTableDetails(ctx context.Context, request models.TableDetailsRequest) (*models.TableDetailsResponseEnvelope, error) {
+	var out models.TableDetailsResponseEnvelope
+	if err := c.postSellerAnalyticsReport(ctx, reports.SearchReportTableDetailsEndpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) GetSearchReportProductSearchTexts(ctx context.Context, request models.ProductSearchTextsRequest) (*models.ProductSearchTextsResponseEnvelope, error) {
+	var out models.ProductSearchTextsResponseEnvelope
+	if err := c.postSellerAnalyticsReport(ctx, reports.SearchReportProductTextsEndpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) GetSearchReportProductOrders(ctx context.Context, request models.ProductOrdersRequest) (*models.ProductOrdersResponseEnvelope, error) {
+	var out models.ProductOrdersResponseEnvelope
+	if err := c.postSellerAnalyticsReport(ctx, reports.SearchReportProductOrdersEndpoint, request, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 func (c *Client) createTaskWithDateRange(ctx context.Context, endpoint, dateFrom, dateTo string) (*models.CreateTaskResponse, error) {
 	reqURL, err := url.Parse(c.SellerAnalyticsBaseURL + endpoint)
 	if err != nil {
@@ -426,32 +620,6 @@ func (c *Client) getTaskStatus(ctx context.Context, endpoint, taskID string) (*m
 	return &out, nil
 }
 
-func (c *Client) getRetentions(ctx context.Context, endpoint string, query models.RetentionsQuery) (*models.MeasurementPenaltiesResponse, error) {
-	reqURL, err := url.Parse(c.SellerAnalyticsBaseURL + endpoint)
-	if err != nil {
-		return nil, err
-	}
-	q := reqURL.Query()
-	if query.DateFrom != "" {
-		q.Set("dateFrom", query.DateFrom)
-	}
-	q.Set("dateTo", query.DateTo)
-	q.Set("limit", strconv.Itoa(query.Limit))
-	if query.Offset > 0 {
-		q.Set("offset", strconv.Itoa(query.Offset))
-	}
-	reqURL.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	var out models.MeasurementPenaltiesResponse
-	if err = c.Send(req, &out); err != nil {
-		return nil, err
-	}
-	return &out, nil
-}
-
 func (c *Client) getBannedProducts(ctx context.Context, endpoint, sort, order string) (*models.BannedProductsResponse, error) {
 	reqURL, err := url.Parse(c.SellerAnalyticsBaseURL + endpoint)
 	if err != nil {
@@ -470,4 +638,19 @@ func (c *Client) getBannedProducts(ctx context.Context, endpoint, sort, order st
 		return nil, err
 	}
 	return &out, nil
+}
+
+func (c *Client) postSellerAnalyticsReport(ctx context.Context, endpoint string, payload interface{}, out interface{}) error {
+	jsonBody, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.SellerAnalyticsBaseURL+endpoint, bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return err
+	}
+	if err = c.Send(req, out); err != nil {
+		return err
+	}
+	return nil
 }

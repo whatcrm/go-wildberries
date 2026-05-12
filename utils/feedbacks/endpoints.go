@@ -1,5 +1,26 @@
 package feedbacks
 
 const (
-	RatingEndpoint = "/api/common/v1/rating"
+	RatingEndpoint                   = "/api/common/v1/rating"
+	FeedbackAnswerEndpoint           = "/api/v1/feedbacks/answer"
+	FeedbackOrderReturnEndpoint      = "/api/v1/feedbacks/order/return"
+	FeedbackByIDEndpoint             = "/api/v1/feedback"
+	NewFeedbacksQuestionsEndpoint    = "/api/v1/new-feedbacks-questions"
+	QuestionsCountUnansweredEndpoint = "/api/v1/questions/count-unanswered"
+	QuestionsCountEndpoint           = "/api/v1/questions/count"
+	QuestionsEndpoint                = "/api/v1/questions"
+	QuestionByIDEndpoint             = "/api/v1/question"
+	FeedbacksCountUnansweredEndpoint = "/api/v1/feedbacks/count-unanswered"
+	FeedbacksCountEndpoint           = "/api/v1/feedbacks/count"
+	FeedbacksEndpoint                = "/api/v1/feedbacks"
+	FeedbackArchiveEndpoint          = "/api/v1/feedbacks/archive"
+	FeedbackPinsEndpoint             = "/api/feedbacks/v1/pins"
+	FeedbackPinsCountEndpoint        = "/api/feedbacks/v1/pins/count"
+	FeedbackPinsLimitsEndpoint       = "/api/feedbacks/v1/pins/limits"
+	SellerChatsEndpoint              = "/api/v1/seller/chats"
+	SellerEventsEndpoint             = "/api/v1/seller/events"
+	SellerMessageEndpoint            = "/api/v1/seller/message"
+	SellerDownloadFileEndpoint       = "/api/v1/seller/download/%s"
+	ReturnsClaimsEndpoint            = "/api/v1/claims"
+	ReturnsClaimPatchEndpoint        = "/api/v1/claim"
 )
