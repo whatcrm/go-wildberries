@@ -342,6 +342,18 @@ func (c *Client) GetFeedbackPinsLimits(ctx context.Context) (*models.PinsLimitsR
 	return &out, nil
 }
 
+func (c *Client) GetBuyerChatPing(ctx context.Context) (*models.PingResponse, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.BuyerChatBaseURL+feedbacks.BuyerChatPingEndpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+	var out models.PingResponse
+	if err = c.Send(req, &out); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 func (c *Client) GetSellerChats(ctx context.Context) (*models.ChatsResponse, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.BuyerChatBaseURL+feedbacks.SellerChatsEndpoint, nil)
 	if err != nil {

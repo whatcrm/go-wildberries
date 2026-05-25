@@ -17,6 +17,7 @@ const (
 	FeedbackPinsEndpoint             = "/api/feedbacks/v1/pins"
 	FeedbackPinsCountEndpoint        = "/api/feedbacks/v1/pins/count"
 	FeedbackPinsLimitsEndpoint       = "/api/feedbacks/v1/pins/limits"
+	BuyerChatPingEndpoint            = "/ping"
 	SellerChatsEndpoint              = "/api/v1/seller/chats"
 	SellerEventsEndpoint             = "/api/v1/seller/events"
 	SellerMessageEndpoint            = "/api/v1/seller/message"

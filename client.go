@@ -5,9 +5,10 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
-	"github.com/whatcrm/go-wildberries/utils"
+	wbutils "github.com/whatcrm/go-wildberries/utils"
 )
 
 const (
@@ -47,6 +48,11 @@ type Client struct {
 }
 
 func NewClient(token string) (*Client, error) {
+	token = strings.TrimSpace(token)
+	if token == "" {
+		return nil, errors.New("token is required")
+	}
+	token = wbutils.NormalizeAPIKey(token)
 	if token == "" {
 		return nil, errors.New("token is required")
 	}
@@ -77,7 +83,7 @@ func (c *Client) Send(req *http.Request, v interface{}) error {
 		req.Header.Set("Content-Type", "application/json")
 	}
 
-	req.Header.Set("Authorization", c.Token)
+	req.Header.Set("Authorization", wbutils.NormalizeAPIKey(c.Token))
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("User-Agent", "go-wildberries-sdk")
 
@@ -88,7 +94,7 @@ func (c *Client) Send(req *http.Request, v interface{}) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return utils.ParseAPIError(resp)
+		return wbutils.ParseAPIError(resp)
 	}
 
 	if v == nil {
