@@ -79,7 +79,7 @@ func NewClient(token string) (*Client, error) {
 }
 
 func (c *Client) Send(req *http.Request, v interface{}) error {
-	if req.Header.Get("Content-Type") == "" && req.Method != http.MethodDelete {
+	if req.Header.Get("Content-Type") == "" {
 		req.Header.Set("Content-Type", "application/json")
 	}
 
