@@ -299,7 +299,9 @@ func (c *Client) PinFeedbacks(ctx context.Context, items []models.PinReviewItem)
 }
 
 func (c *Client) UnpinFeedbacks(ctx context.Context, pinIDs []int64) (*models.UnpinReviewsResponse, error) {
-	jsonBody, err := json.Marshal(pinIDs)
+	jsonBody, err := json.Marshal(map[string][]int64{
+		"pinIds": pinIDs,
+	})
 	if err != nil {
 		return nil, err
 	}
