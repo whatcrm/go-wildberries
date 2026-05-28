@@ -299,8 +299,12 @@ func (c *Client) PinFeedbacks(ctx context.Context, items []models.PinReviewItem)
 }
 
 func (c *Client) UnpinFeedbacks(ctx context.Context, pinIDs []int64) (*models.UnpinReviewsResponse, error) {
-	jsonBody, err := json.Marshal(map[string][]int64{
-		"pinIds": pinIDs,
+	pinIDStrings := make([]string, 0, len(pinIDs))
+	for _, id := range pinIDs {
+		pinIDStrings = append(pinIDStrings, strconv.FormatInt(id, 10))
+	}
+	jsonBody, err := json.Marshal(map[string][]string{
+		"pinIds": pinIDStrings,
 	})
 	if err != nil {
 		return nil, err
