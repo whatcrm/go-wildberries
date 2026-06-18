@@ -23,7 +23,7 @@ go get github.com/whatcrm/go-wildberries
 
 **go-wildberries** includes a package for working with models, which allows you to use just the API and **create your own models**.
 This means you can create your own structs and use them with our **go-wildberries** package,
-even if you don't want to use every field from Pipedrive's entities.
+even if you don't want to use every field from Wildberries' entities.
 
 Here's the link to [Models](https://github.com/whatcrm/go-wildberries/models) package and example of how to install the package.
 
