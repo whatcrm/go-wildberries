@@ -422,8 +422,12 @@ func (c *Client) SendSellerMessage(ctx context.Context, request models.SendMessa
 	return &out, nil
 }
 
+func (c *Client) SellerFileURL(id string) string {
+	return c.BuyerChatBaseURL + fmt.Sprintf(feedbacks.SellerDownloadFileEndpoint, id)
+}
+
 func (c *Client) DownloadSellerFile(ctx context.Context, id string, out *bytes.Buffer) error {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.BuyerChatBaseURL+fmt.Sprintf(feedbacks.SellerDownloadFileEndpoint, id), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.SellerFileURL(id), nil)
 	if err != nil {
 		return err
 	}
